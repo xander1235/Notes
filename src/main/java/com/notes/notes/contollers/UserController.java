@@ -2,6 +2,8 @@ package com.notes.notes.contollers;
 
 import com.notes.notes.pojos.requests.ReqUpdateUser;
 import com.notes.notes.pojos.requests.ReqUser;
+import com.notes.notes.pojos.responses.ResLogin;
+import com.notes.notes.pojos.responses.ResLogout;
 import com.notes.notes.pojos.responses.ResUser;
 import com.notes.notes.services.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,20 +45,20 @@ public class UserController {
     }
 
     @GetMapping(value = "/user/login/{user_name}")
-    public ResponseEntity<String> userLogin(
+    public ResponseEntity<ResLogin> userLogin(
             @NotBlank(message = "user name can not be blank") @PathVariable("user_name") String userName,
             @NotBlank(message = "password can not be blank") @RequestParam("password") String password) {
         String transactionId = userService.userLogin(userName, password);
-        return new ResponseEntity<>(transactionId, HttpStatus.OK);
+        return new ResponseEntity<>(new ResLogin(transactionId), HttpStatus.OK);
     }
 
     @GetMapping(value = "/user/logout")
-    public ResponseEntity<String> userLogout(@RequestParam("transaction_id") String transactionId) {
+    public ResponseEntity<ResLogout> userLogout(@RequestParam("transaction_id") String transactionId) {
         String message = userService.userLogout(transactionId);
-        return  new ResponseEntity<>(message, HttpStatus.OK);
+        return new ResponseEntity<>(new ResLogout(message), HttpStatus.OK);
     }
 
-    private void checkApiToken(String token){
+    private void checkApiToken(String token) {
         if (!selfAuthToken.equals(token)) {
             log.error("Authorization failure");
             throw new RuntimeException("Authorization failure");

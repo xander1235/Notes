@@ -2,6 +2,8 @@ package com.notes.notes.contollers;
 
 import com.notes.notes.models.Notes;
 import com.notes.notes.pojos.requests.ReqCreateNote;
+import com.notes.notes.pojos.responses.ResLogout;
+import com.notes.notes.pojos.responses.ResNotes;
 import com.notes.notes.services.NotesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -36,9 +38,9 @@ public class NotesController {
     }
 
     @GetMapping(value = "/notes")
-    public ResponseEntity<List<Notes>> getAllUserNotes(Pageable pageable, @RequestHeader("transaction_id") String transactionId) {
+    public ResponseEntity<ResNotes> getAllUserNotes(Pageable pageable, @RequestHeader("transaction_id") String transactionId) {
         List<Notes> notesList = notesService.getAllUserNotes(pageable, transactionId);
-        return new ResponseEntity<>(notesList, HttpStatus.OK);
+        return new ResponseEntity<>(new ResNotes(notesList), HttpStatus.OK);
     }
 
     @GetMapping(value = "/notes/{title}")
@@ -48,15 +50,15 @@ public class NotesController {
     }
 
     @DeleteMapping(value = "/notes/{title}")
-    public ResponseEntity<String> deleteUserNotes(@RequestHeader("transaction_id") String transactionId, @NotBlank(message = "title can not be blank") @PathVariable("title") String title) {
+    public ResponseEntity<ResLogout> deleteUserNotes(@RequestHeader("transaction_id") String transactionId, @NotBlank(message = "title can not be blank") @PathVariable("title") String title) {
         String message = notesService.deleteUserNotes(title, transactionId);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return new ResponseEntity<>(new ResLogout(message), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/notes")
-    public ResponseEntity<String> deleteAllUserNotes(@RequestHeader("transaction_id") String transactionId) {
+    public ResponseEntity<ResLogout> deleteAllUserNotes(@RequestHeader("transaction_id") String transactionId) {
         String message = notesService.deleteAllUserNotes(transactionId);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return new ResponseEntity<>(new ResLogout(message), HttpStatus.OK);
     }
 
 }
