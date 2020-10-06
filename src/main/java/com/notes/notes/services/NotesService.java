@@ -32,6 +32,7 @@ public class NotesService {
     }
 
     public Notes createNote(ReqCreateNote reqCreateNote, String transactionId) {
+        log.info("transactionId: {}", transactionId);
         UserCredentials userCredentials = checkIfNull(userService.getUserByTransactionId(transactionId), NOT_LOGGED_IN_TO_CREATE);
         checkIfNotNull(notesRepository.findOneByUserIdAndTitle(userCredentials.getId(), reqCreateNote.getTitle()), NOT_LOGGED_IN_TO_CREATE + reqCreateNote.getTitle());
         Notes notes = Notes.builder()
